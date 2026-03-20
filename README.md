@@ -17,7 +17,7 @@ graph TB
         SCAN[html5-qrcode Scanner]
     end
 
-    subgraph Backend["⚡ Backend — FastAPI"]
+    subgraph Backend["Backend — FastAPI"]
         API[FastAPI :8000]
         AUTH[JWT Auth]
         CRUD[Products CRUD]
