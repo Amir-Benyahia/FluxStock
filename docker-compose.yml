@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  # ── PostgreSQL ──────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fluxstock}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_super_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-fluxstock}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fluxstock}"]
+      interval: 5s
+      retries: 5
+
+  # ── FastAPI Backend ─────────────────────────
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./data-science:/app/data_science_module
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ── React Frontend ─────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
