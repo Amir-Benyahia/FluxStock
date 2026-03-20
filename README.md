@@ -1,8 +1,6 @@
 # FluxStock — Intelligent Inventory Management
 
 > Micro-SaaS de gestion de stock intelligent avec prédictions IA, scan de code-barres et monétisation Stripe.  
-> Projet Portfolio — Master 1 Informatique
-
 ---
 
 ## Architecture
