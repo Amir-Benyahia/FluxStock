@@ -4,6 +4,7 @@ FluxStock — FastAPI application factory.
 Swagger UI available at /docs when running.
 """
 
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -11,22 +12,38 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)-7s | %(name)s — %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup / shutdown hooks."""
-    # On startup — nothing heavy needed, engine is lazy
-    yield
-    # On shutdown — dispose the async engine
-    from app.core.database import engine
+    from app.core.database import create_tables, engine
+    from app.core.seed import run_seed
 
+    # On startup — ensure tables exist and seed test data
+    logger.info("🚀 Starting %s...", settings.APP_NAME)
+    await create_tables()
+    await run_seed()
+    logger.info("✅ %s ready.", settings.APP_NAME)
+
+    yield
+
+    # On shutdown — dispose the async engine
     await engine.dispose()
+    logger.info("👋 %s shut down.", settings.APP_NAME)
 
 
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.APP_NAME,
-        description="🚀 Intelligent Inventory Management Micro-SaaS — AI-powered reorder predictions, barcode scanning & Stripe billing.",
+        description="Intelligent Inventory Management Micro-SaaS — AI-powered reorder predictions, barcode scanning & Stripe billing.",
         version="1.0.0",
         lifespan=lifespan,
     )

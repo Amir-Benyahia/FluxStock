@@ -5,22 +5,20 @@ export default {
     theme: {
         extend: {
             colors: {
-                brand: {
-                    50: '#eef2ff',
-                    100: '#e0e7ff',
-                    200: '#c7d2fe',
-                    300: '#a5b4fc',
-                    400: '#818cf8',
-                    500: '#6366f1',
-                    600: '#4f46e5',
-                    700: '#4338ca',
-                    800: '#3730a3',
-                    900: '#312e81',
-                    950: '#1e1b4b',
+                surface: {
+                    DEFAULT: '#161618',
+                    light: '#1e1e21',
+                    border: '#232326',
+                },
+                accent: {
+                    DEFAULT: '#2dd4bf',
+                    dim: '#1a3a35',
+                    hover: '#14b8a6',
+                    muted: 'rgba(45, 212, 191, 0.10)',
                 },
             },
             fontFamily: {
-                sans: ['Inter', 'system-ui', 'sans-serif'],
+                sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
             },
         },
     },

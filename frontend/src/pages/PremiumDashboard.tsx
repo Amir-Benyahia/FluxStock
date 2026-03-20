@@ -27,19 +27,19 @@ export default function PremiumDashboard() {
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-1 flex items-center gap-2">
-                <Crown size={24} className="text-amber-400" />
+            <h1 className="text-xl font-semibold text-white mb-0.5 flex items-center gap-2">
+                <Crown size={20} className="text-amber-400" />
                 Dashboard Pro
             </h1>
-            <p className="text-gray-500 text-sm mb-8">Prédictions IA et optimisation des stocks</p>
+            <p className="text-[#8b8b8e] text-sm mb-8">Prédictions et optimisation des stocks</p>
 
             {/* Product selector */}
-            <div className="glass rounded-xl p-5 mb-6">
-                <label className="block text-xs font-medium text-gray-400 mb-2">Sélectionnez un produit pour l'analyse</label>
+            <div className="card p-5 mb-5">
+                <label className="block text-xs font-medium text-[#8b8b8e] mb-2">Sélectionnez un produit pour l'analyse</label>
                 <select
                     value={selectedProduct ?? ''}
                     onChange={(e) => setSelectedProduct(Number(e.target.value) || null)}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-brand-500 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-lg bg-surface-light border border-surface-border text-sm focus:outline-none focus:border-accent transition-colors"
                 >
                     <option value="">— Choisir un produit —</option>
                     {products.map((p) => (
@@ -55,78 +55,76 @@ export default function PremiumDashboard() {
                 <div className="animate-fade-in">
                     {reorderLoading ? (
                         <div className="flex justify-center py-16">
-                            <Loader2 className="animate-spin text-brand-400" size={32} />
+                            <Loader2 className="animate-spin text-accent" size={28} />
                         </div>
                     ) : reorder ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {/* Demand card */}
-                            <div className="glass rounded-xl p-5">
+                            <div className="card p-5">
                                 <div className="flex items-center gap-2 mb-4">
-                                    <BarChart3 size={18} className="text-brand-400" />
-                                    <h3 className="font-semibold text-sm">Analyse de la demande</h3>
+                                    <BarChart3 size={16} className="text-accent" />
+                                    <h3 className="font-medium text-sm text-[#e4e4e7]">Analyse de la demande</h3>
                                 </div>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-gray-500">Demande quotidienne moy.</span>
-                                        <span className="font-mono text-sm">{reorder.avg_daily_demand} unités/j</span>
+                                        <span className="text-xs text-[#8b8b8e]">Demande quotidienne moy.</span>
+                                        <span className="font-mono text-sm text-[#e4e4e7]">{reorder.avg_daily_demand} unités/j</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-gray-500">Demande quotidienne max</span>
-                                        <span className="font-mono text-sm">{reorder.max_daily_demand} unités/j</span>
+                                        <span className="text-xs text-[#8b8b8e]">Demande quotidienne max</span>
+                                        <span className="font-mono text-sm text-[#e4e4e7]">{reorder.max_daily_demand} unités/j</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-gray-500">Délai fournisseur</span>
-                                        <span className="font-mono text-sm">{reorder.lead_time_days} jours</span>
+                                        <span className="text-xs text-[#8b8b8e]">Délai fournisseur</span>
+                                        <span className="font-mono text-sm text-[#e4e4e7]">{reorder.lead_time_days} jours</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Reorder point card */}
-                            <div className="glass rounded-xl p-5">
+                            <div className="card p-5">
                                 <div className="flex items-center gap-2 mb-4">
-                                    <ShieldCheck size={18} className="text-emerald-400" />
-                                    <h3 className="font-semibold text-sm">Point de commande</h3>
+                                    <ShieldCheck size={16} className="text-emerald-400" />
+                                    <h3 className="font-medium text-sm text-[#e4e4e7]">Point de commande</h3>
                                 </div>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-gray-500">Stock de sécurité (SS)</span>
-                                        <span className="font-mono text-sm">{reorder.safety_stock}</span>
+                                        <span className="text-xs text-[#8b8b8e]">Stock de sécurité (SS)</span>
+                                        <span className="font-mono text-sm text-[#e4e4e7]">{reorder.safety_stock}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-gray-500">Point de commande (RP)</span>
-                                        <span className="font-mono text-sm font-bold text-brand-400">{reorder.reorder_point}</span>
+                                        <span className="text-xs text-[#8b8b8e]">Point de commande (RP)</span>
+                                        <span className="font-mono text-sm font-semibold text-accent">{reorder.reorder_point}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-gray-500">Stock actuel</span>
-                                        <span className="font-mono text-sm">{reorder.current_stock}</span>
+                                        <span className="text-xs text-[#8b8b8e]">Stock actuel</span>
+                                        <span className="font-mono text-sm text-[#e4e4e7]">{reorder.current_stock}</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Alert banner */}
-                            <div className={`md:col-span-2 rounded-xl p-5 flex items-center gap-4 ${reorder.reorder_needed
-                                    ? 'bg-red-500/10 border border-red-500/20'
-                                    : 'bg-emerald-500/10 border border-emerald-500/20'
+                            <div className={`md:col-span-2 card p-5 flex items-center gap-4 ${reorder.reorder_needed
+                                ? '!border-red-500/20'
+                                : '!border-emerald-500/20'
                                 }`}>
                                 {reorder.reorder_needed ? (
                                     <>
-                                        <AlertTriangle size={24} className="text-red-400 flex-shrink-0" />
+                                        <AlertTriangle size={22} className="text-red-400 flex-shrink-0" />
                                         <div>
-                                            <p className="font-semibold text-sm text-red-300">Réapprovisionnement nécessaire</p>
-                                            <p className="text-xs text-red-400/70 mt-0.5">
+                                            <p className="font-medium text-sm text-red-400">Réapprovisionnement nécessaire</p>
+                                            <p className="text-xs text-[#8b8b8e] mt-0.5">
                                                 Le stock actuel ({reorder.current_stock}) est en dessous du point de commande ({reorder.reorder_point}).
-                                                Commandez immédiatement pour éviter une rupture.
                                             </p>
                                         </div>
                                     </>
                                 ) : (
                                     <>
-                                        <ShieldCheck size={24} className="text-emerald-400 flex-shrink-0" />
+                                        <ShieldCheck size={22} className="text-emerald-400 flex-shrink-0" />
                                         <div>
-                                            <p className="font-semibold text-sm text-emerald-300">Stock suffisant</p>
-                                            <p className="text-xs text-emerald-400/70 mt-0.5">
+                                            <p className="font-medium text-sm text-emerald-400">Stock suffisant</p>
+                                            <p className="text-xs text-[#8b8b8e] mt-0.5">
                                                 Le stock actuel ({reorder.current_stock}) est au-dessus du point de commande ({reorder.reorder_point}).
-                                                Aucune action requise.
                                             </p>
                                         </div>
                                     </>
@@ -134,12 +132,12 @@ export default function PremiumDashboard() {
                             </div>
 
                             {/* Formula explanation */}
-                            <div className="md:col-span-2 glass rounded-xl p-5">
+                            <div className="md:col-span-2 card p-5">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <TrendingDown size={18} className="text-violet-400" />
-                                    <h3 className="font-semibold text-sm">Formules utilisées</h3>
+                                    <TrendingDown size={16} className="text-violet-400" />
+                                    <h3 className="font-medium text-sm text-[#e4e4e7]">Formules utilisées</h3>
                                 </div>
-                                <div className="space-y-2 text-xs text-gray-500 font-mono">
+                                <div className="space-y-1.5 text-xs text-[#55555a] font-mono">
                                     <p>SS = (d_max × L_max) − (d_avg × L)</p>
                                     <p>RP = (d_avg × L) + SS</p>
                                     <p>Réappro nécessaire si : stock_actuel &lt; RP</p>
@@ -147,9 +145,8 @@ export default function PremiumDashboard() {
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center py-16 text-gray-600 text-sm">
+                        <div className="text-center py-16 text-[#55555a] text-sm">
                             Aucune donnée de mouvement disponible pour ce produit.
-                            Enregistrez des sorties de stock pour activer les prédictions.
                         </div>
                     )}
                 </div>

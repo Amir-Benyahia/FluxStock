@@ -1,5 +1,7 @@
 """Auth routes — register, login, me."""
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +16,8 @@ from app.core.security import (
 from app.models.user import User
 from app.schemas.user import Token, UserLogin, UserRead, UserRegister
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
@@ -21,8 +25,15 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 async def register(payload: UserRegister, db: AsyncSession = Depends(get_db)):
     """Create a new user account."""
     # Check if email already taken
-    existing = await db.execute(select(User).where(User.email == payload.email))
-    if existing.scalar_one_or_none():
+    logger.info("Register attempt for email: %s", payload.email)
+
+    result = await db.execute(select(User).where(User.email == payload.email))
+    existing = result.scalar_one_or_none()
+
+    logger.info("Existing user lookup result: %s", existing)
+
+    if existing is not None:
+        logger.warning("Email already registered: %s", payload.email)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Email already registered",
@@ -36,6 +47,7 @@ async def register(payload: UserRegister, db: AsyncSession = Depends(get_db)):
     db.add(user)
     await db.flush()
     await db.refresh(user)
+    logger.info("User created successfully: id=%d, email=%s", user.id, user.email)
     return user
 
 

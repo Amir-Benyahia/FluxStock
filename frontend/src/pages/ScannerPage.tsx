@@ -27,12 +27,10 @@ export default function ScannerPage() {
                 { facingMode: 'environment' },
                 { fps: 10, qrbox: { width: 280, height: 150 } },
                 async (decodedText) => {
-                    // Success callback
                     setResult(decodedText)
                     await scanner.stop()
                     setScanning(false)
 
-                    // Lookup by SKU
                     try {
                         const { data } = await productsApi.getBySku(decodedText)
                         setProduct(data)
@@ -40,9 +38,7 @@ export default function ScannerPage() {
                         setNotFound(true)
                     }
                 },
-                () => {
-                    // Ignore scan errors (no code detected)
-                },
+                () => { },
             )
             setScanning(true)
         } catch (err) {
@@ -69,25 +65,25 @@ export default function ScannerPage() {
 
     return (
         <div className="max-w-md mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <ScanBarcode size={24} className="text-brand-400" />
+            <h1 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                <ScanBarcode size={20} className="text-accent" />
                 Scanner
             </h1>
 
             {/* Scanner viewport */}
-            <div className="glass rounded-2xl overflow-hidden mb-6">
-                <div id="scanner-region" className="w-full min-h-[250px] bg-gray-900/50" />
+            <div className="card overflow-hidden mb-6">
+                <div id="scanner-region" className="w-full min-h-[250px] bg-black/30" />
 
                 {!scanning && !result && (
                     <div className="p-6 text-center">
                         <button
                             onClick={startScanner}
-                            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-brand-700 text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent text-[#0c0c0f] font-medium text-sm hover:bg-accent-hover transition-colors"
                         >
-                            <Camera size={20} />
+                            <Camera size={18} />
                             Lancer le scan
                         </button>
-                        <p className="text-xs text-gray-600 mt-3">
+                        <p className="text-xs text-[#55555a] mt-3">
                             Scannez un code-barres pour rechercher ou ajouter un produit
                         </p>
                     </div>
@@ -97,9 +93,9 @@ export default function ScannerPage() {
                     <div className="p-4 text-center">
                         <button
                             onClick={stopScanner}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/30 transition-colors"
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 transition-colors"
                         >
-                            <XCircle size={18} />
+                            <XCircle size={16} />
                             Arrêter
                         </button>
                     </div>
@@ -107,7 +103,7 @@ export default function ScannerPage() {
             </div>
 
             {error && (
-                <div className="glass rounded-xl p-4 mb-4 border-red-500/20">
+                <div className="card p-4 mb-4 border-red-500/20">
                     <p className="text-sm text-red-400">{error}</p>
                 </div>
             )}
@@ -115,34 +111,34 @@ export default function ScannerPage() {
             {/* Scan result */}
             {result && (
                 <div className="animate-fade-in">
-                    <div className="glass rounded-xl p-4 mb-4">
-                        <p className="text-xs text-gray-500 mb-1">Code scanné</p>
-                        <p className="font-mono text-sm text-brand-400">{result}</p>
+                    <div className="card p-4 mb-4">
+                        <p className="text-xs text-[#55555a] mb-1">Code scanné</p>
+                        <p className="font-mono text-sm text-accent">{result}</p>
                     </div>
 
                     {product && (
-                        <div className="glass rounded-xl p-5">
+                        <div className="card p-5">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-12 h-12 rounded-lg bg-brand-600/10 flex items-center justify-center">
-                                    <Package size={20} className="text-brand-400" />
+                                <div className="w-10 h-10 rounded-lg bg-surface-light flex items-center justify-center">
+                                    <Package size={18} className="text-[#55555a]" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold">{product.name}</h3>
-                                    <p className="text-xs text-gray-500">Stock : {product.current_stock}</p>
+                                    <h3 className="font-medium text-[#e4e4e7]">{product.name}</h3>
+                                    <p className="text-xs text-[#55555a]">Stock : {product.current_stock}</p>
                                 </div>
                             </div>
-                            <p className="text-sm text-gray-400">{product.description || 'Aucune description'}</p>
+                            <p className="text-sm text-[#8b8b8e]">{product.description || 'Aucune description'}</p>
                         </div>
                     )}
 
                     {notFound && (
-                        <div className="glass rounded-xl p-5 text-center">
-                            <p className="text-sm text-gray-400 mb-4">Produit non trouvé pour ce code-barres.</p>
+                        <div className="card p-5 text-center">
+                            <p className="text-sm text-[#8b8b8e] mb-4">Produit non trouvé pour ce code-barres.</p>
                             <button
                                 onClick={() => navigate('/products')}
-                                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-brand-700 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent text-[#0c0c0f] text-sm font-medium hover:bg-accent-hover transition-colors"
                             >
-                                <Plus size={18} />
+                                <Plus size={16} />
                                 Créer ce produit
                             </button>
                         </div>
@@ -155,7 +151,7 @@ export default function ScannerPage() {
                             setNotFound(false)
                             startScanner()
                         }}
-                        className="w-full mt-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-gray-400 hover:bg-white/10 transition-colors"
+                        className="w-full mt-4 py-2.5 rounded-lg bg-surface border border-surface-border text-sm font-medium text-[#8b8b8e] hover:bg-surface-light transition-colors"
                     >
                         Scanner un autre code
                     </button>
