@@ -9,7 +9,7 @@
 
 ```mermaid
 graph TB
-    subgraph Frontend["🖥️ Frontend — React 18 + TypeScript"]
+    subgraph Frontend["Frontend — React 18 + TypeScript"]
         VITE[Vite Dev Server :3000]
         REACT[React SPA]
         RQ[React Query]
@@ -26,12 +26,12 @@ graph TB
         STRIPE[Stripe Webhook]
     end
 
-    subgraph DataScience["🧠 Data Science"]
+    subgraph DataScience["Data Science"]
         PANDAS[Pandas + Statsmodels]
         RP[Reorder Point Calculator]
     end
 
-    subgraph Infrastructure["🐳 Docker"]
+    subgraph Infrastructure["Docker"]
         PG[(PostgreSQL 16)]
     end
 
