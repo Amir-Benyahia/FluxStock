@@ -1,5 +1,6 @@
 """User model — authentication & premium status."""
 
+import uuid
 from sqlalchemy import Boolean, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -15,6 +16,8 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(150), nullable=False)
     role: Mapped[str] = mapped_column(String(20), default="user")  # admin | user
     is_premium: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    verification_token: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     # Relationships
     products = relationship("Product", back_populates="owner", lazy="selectin")

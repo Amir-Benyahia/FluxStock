@@ -3,11 +3,12 @@
 import logging
 
 import stripe
-from fastapi import APIRouter, HTTPException, Header, Request, status
+from fastapi import APIRouter, HTTPException, Header, Request, status, Depends
 from sqlalchemy import select
 
 from app.core.config import settings
 from app.core.database import async_session
+from app.core.security import get_current_user
 from app.models.user import User
 
 logger = logging.getLogger(__name__)
@@ -15,6 +16,30 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/webhooks", tags=["Stripe"])
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+@router.post("/stripe/create-checkout-session")
+async def create_checkout_session(
+    current_user: User = Depends(get_current_user),
+):
+    """Create a Stripe Checkout Session for a subscription."""
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    "price": settings.STRIPE_PRICE_ID,
+                    "quantity": 1,
+                },
+            ],
+            mode="subscription",
+            success_url=f"{settings.FRONTEND_URL}/premium?success=true",
+            cancel_url=f"{settings.FRONTEND_URL}/premium?canceled=true",
+            customer_email=current_user.email,
+        )
+        return {"url": checkout_session.url}
+    except Exception as e:
+        logger.error(f"Error creating checkout session: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @router.post("/stripe", status_code=status.HTTP_200_OK)

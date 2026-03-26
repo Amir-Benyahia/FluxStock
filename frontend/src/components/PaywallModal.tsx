@@ -1,10 +1,29 @@
-import { Crown, X } from 'lucide-react'
+import { Crown, X, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { stripeApi } from '../lib/api'
 
 interface Props {
     onClose: () => void
 }
 
 export default function PaywallModal({ onClose }: Props) {
+    const [loading, setLoading] = useState(false)
+
+    const handleCheckout = async () => {
+        setLoading(true)
+        try {
+            const { data } = await stripeApi.createCheckoutSession()
+            if (data.url) {
+                window.location.href = data.url
+            }
+        } catch (err) {
+            console.error(err)
+            alert("Erreur lors de la création de la session Stripe.")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 animate-fade-in p-4">
             <div className="card max-w-md w-full p-8 relative">
@@ -39,12 +58,12 @@ export default function PaywallModal({ onClose }: Props) {
                 </ul>
 
                 <button
-                    onClick={() => {
-                        alert('Stripe Checkout — à connecter avec votre clé Stripe.')
-                    }}
-                    className="w-full py-2.5 rounded-lg bg-accent text-[#0c0c0f] font-medium text-sm hover:bg-accent-hover transition-colors"
+                    onClick={handleCheckout}
+                    disabled={loading}
+                    className="w-full py-2.5 rounded-lg bg-accent text-[#0c0c0f] font-medium text-sm hover:bg-accent-hover transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                    Commencer l'essai Pro — 9,99 €/mois
+                    {loading && <Loader2 size={16} className="animate-spin" />}
+                    {loading ? 'Chargement...' : "Commencer l'essai Pro — 9,99 €/mois"}
                 </button>
 
                 <p className="text-center text-xs text-[#55555a] mt-3">Annulation possible à tout moment</p>

@@ -1,18 +1,15 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { authApi } from '../lib/api'
-import { useAuthStore } from '../stores/authStore'
-import { UserPlus, Loader2 } from 'lucide-react'
+import { UserPlus, Loader2, MailCheck } from 'lucide-react'
 
 export default function RegisterPage() {
-    const navigate = useNavigate()
-    const setToken = useAuthStore((s) => s.setToken)
-    const setUser = useAuthStore((s) => s.setUser)
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
+    const [isRegistered, setIsRegistered] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -20,12 +17,8 @@ export default function RegisterPage() {
 
         try {
             await authApi.register({ email, password, full_name: fullName })
-            const { data: tokenData } = await authApi.login({ email, password })
-            setToken(tokenData.access_token)
-            const { data: user } = await authApi.me()
-            setUser(user)
-            toast.success(`Bienvenue ${user.full_name}`)
-            navigate('/')
+            setIsRegistered(true)
+            toast.success("Compte créé ! Vérifiez vos emails.")
         } catch (err: any) {
             const message =
                 err?.response?.data?.detail || "Une erreur est survenue lors de l'inscription"
@@ -33,6 +26,28 @@ export default function RegisterPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    if (isRegistered) {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-4 text-center">
+                <div className="card w-full max-w-sm p-8 animate-fade-in">
+                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
+                        <MailCheck size={32} className="text-emerald-400" />
+                    </div>
+                    <h1 className="text-xl font-semibold text-white mb-2">Vérifiez vos emails</h1>
+                    <p className="text-[#8b8b8e] text-sm mb-8">
+                        Un lien de confirmation a été envoyé à <span className="text-white font-medium">{email}</span>.
+                    </p>
+                    <Link
+                        to="/login"
+                        className="w-full inline-flex py-2.5 rounded-lg bg-accent text-[#0c0c0f] font-medium text-sm items-center justify-center hover:bg-accent-hover transition-colors"
+                    >
+                        Retour à la connexion
+                    </Link>
+                </div>
+            </div>
+        )
     }
 
     return (

@@ -3,13 +3,22 @@ Alembic env.py — configured for async SQLAlchemy.
 """
 
 import asyncio
+import os
+import sys
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
+# ── Force Python to see the root 'app' folder ──
+sys.path.append(os.getcwd())
+
 from app.core.config import settings
-from app.models import Base  # noqa: F401 — ensures all models are registered
+from app.models.base import Base  # Ensure all models are registered via their imports
+from app.models.user import User
+from app.models.product import Product
+from app.models.stock_movement import StockMovement
+from app.models.forecast import Forecast
 
 config = context.config
 

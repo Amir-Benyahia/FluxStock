@@ -86,6 +86,7 @@ export const authApi = {
     login: (data: { email: string; password: string }) =>
         api.post<{ access_token: string; token_type: string }>('/auth/login', data),
     me: () => api.get<User>('/auth/me'),
+    verifyEmail: (token: string) => api.get<{ message: string }>(`/auth/verify-email?token=${token}`),
 }
 
 // Products
@@ -110,4 +111,9 @@ export const stockApi = {
 export const forecastApi = {
     getReorder: (productId: number, leadTimeDays = 7) =>
         api.get<ReorderResult>(`/products/${productId}/reorder`, { params: { lead_time_days: leadTimeDays } }),
+}
+
+// Stripe
+export const stripeApi = {
+    createCheckoutSession: () => api.post<{ url: string }>('/webhooks/stripe/create-checkout-session'),
 }

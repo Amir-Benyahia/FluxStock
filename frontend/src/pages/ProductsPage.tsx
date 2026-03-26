@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productsApi, type Product } from '../lib/api'
 import ProductCard from '../components/ProductCard'
@@ -6,6 +7,8 @@ import { Plus, Search, X, Loader2 } from 'lucide-react'
 
 export default function ProductsPage() {
     const queryClient = useQueryClient()
+    const location = useLocation()
+    const navigate = useNavigate()
     const [search, setSearch] = useState('')
     const [showForm, setShowForm] = useState(false)
     const [form, setForm] = useState({ name: '', sku: '', description: '', purchase_price: 0, selling_price: 0, current_stock: 0 })
@@ -14,6 +17,21 @@ export default function ProductsPage() {
         queryKey: ['products'],
         queryFn: () => productsApi.list().then((r) => r.data),
     })
+
+    // Handle scanner redirects
+    useEffect(() => {
+        if (location.state?.highlightedSku) {
+            setSearch(location.state.highlightedSku)
+            // Clear state so it doesn't persist on refresh
+            navigate(location.pathname, { replace: true, state: {} })
+        }
+        if (location.state?.newSku) {
+            setForm((prev) => ({ ...prev, sku: location.state.newSku }))
+            setShowForm(true)
+            // Clear state
+            navigate(location.pathname, { replace: true, state: {} })
+        }
+    }, [location, navigate])
 
     const createMutation = useMutation({
         mutationFn: (data: Partial<Product>) => productsApi.create(data),

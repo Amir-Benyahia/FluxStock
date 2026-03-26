@@ -8,6 +8,7 @@ import DashboardPage from './pages/DashboardPage'
 import ProductsPage from './pages/ProductsPage'
 import ScannerPage from './pages/ScannerPage'
 import PremiumDashboard from './pages/PremiumDashboard'
+import VerifyEmailPage from './pages/VerifyEmailPage'
 
 export default function App() {
     const token = useAuthStore((s) => s.token)
@@ -20,6 +21,7 @@ export default function App() {
                     {/* Public */}
                     <Route path="/login" element={token ? <Navigate to="/" /> : <LoginPage />} />
                     <Route path="/register" element={token ? <Navigate to="/" /> : <RegisterPage />} />
+                    <Route path="/verify-email" element={<VerifyEmailPage />} />
 
                     {/* Protected */}
                     <Route element={<ProtectedRoute />}>

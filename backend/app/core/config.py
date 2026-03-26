@@ -29,6 +29,15 @@ class Settings(BaseSettings):
     # ── App ─────────────────────────────────────
     APP_NAME: str = "FluxStock"
     DEBUG: bool = False
+    FRONTEND_URL: str = "http://localhost:3000"
+
+    # ── Email (SMTP) ────────────────────────────
+    SMTP_HOST: str = "smtp.mailtrap.io"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    EMAILS_FROM_EMAIL: str = "info@fluxstock.com"
+    EMAILS_FROM_NAME: str = "FluxStock"
 
 
 settings = Settings()
